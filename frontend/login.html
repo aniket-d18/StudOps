@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="StudOps  Smart Student Management System Login">
+  <title>Login  StudOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Login-page specific extras */
+    .floating-dots { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .dot {
+      position: absolute; border-radius: 50%;
+      background: rgba(99,102,241,.15); animation: floatDot linear infinite;
+    }
+    @keyframes floatDot {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: .6; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+    .login-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: var(--space-md) 0; color: var(--color-text-disabled); font-size: .8rem;
+    }
+    .login-divider::before, .login-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--glass-border);
+    }
+    .remember-row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: .85rem; color: var(--color-text-secondary); cursor: pointer;
+    }
+    .remember-row input[type="checkbox"] { display: none; }
+    .custom-checkbox {
+      width: 18px; height: 18px; border-radius: 5px;
+      border: 1.5px solid var(--glass-border); background: rgba(255,255,255,.05);
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition); flex-shrink: 0; cursor: pointer;
+    }
+    .remember-row input:checked + .custom-checkbox {
+      background: var(--color-primary); border-color: var(--color-primary);
+      box-shadow: 0 0 10px rgba(99,102,241,.4);
+    }
+    .remember-row input:checked + .custom-checkbox::after {
+      content: ''; width: 10px; height: 6px;
+      border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+      transform: rotate(-45deg) translateY(-1px);
+    }
+    .btn-login-spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-primary.loading .btn-login-text { display: none; }
+    .btn-primary.loading .btn-login-spinner { display: block; }
+  </style>
+</head>
+<body>
+  <!-- Animated background orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Floating dots -->
+  <div class="floating-dots" id="floatingDots"></div>
+
+  <div class="login-page">
+    <form class="login-card" id="loginForm" autocomplete="off" novalidate>
+
+      <!-- Logo -->
+      <div class="login-logo">
+        <div class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>
+          </svg>
+        </div>
+        <div class="logo-name"><span>Stud</span>Ops</div>
+      </div>
+
+      <h1>Welcome back</h1>
+      <p class="login-subtitle">Sign in to manage your classroom</p>
+
+      <!-- Username -->
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <input class="form-input" id="username" type="text" placeholder="Enter your username" required autofocus>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group" style="margin-top:12px">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <input class="form-input" id="password" type="password" placeholder="Enter your password" required>
+          <button type="button" class="input-toggle" id="pwToggle" aria-label="Toggle password visibility">
+            <svg id="eyeOpen" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg id="eyeClosed" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Remember + error row -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px;">
+        <label class="remember-row">
+          <input type="checkbox" id="rememberMe">
+          <span class="custom-checkbox"></span>
+          Remember me
+        </label>
+      </div>
+
+      <p class="login-error" id="loginError" role="alert"></p>
+
+      <button class="btn btn-primary" type="submit" id="loginBtn">
+        <span class="btn-login-text">Sign In</span>
+        <span class="btn-login-spinner"></span>
+      </button>
+
+      <div class="login-divider">Default credentials</div>
+      <div class="login-hint">
+        Username: <strong>admin</strong> &nbsp;/&nbsp; Password: <strong>admin123</strong>
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    const API = "/api";
+
+    /*  Floating dots  */
+    const container = document.getElementById("floatingDots");
+    for (let i = 0; i < 18; i++) {
+      const d = document.createElement("div");
+      const size = Math.random() * 6 + 3;
+      d.className = "dot";
+      d.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random() * 100}%;
+        animation-duration:${Math.random() * 12 + 8}s;
+        animation-delay:${Math.random() * 10}s;
+      `;
+      container.appendChild(d);
+    }
+
+    /*  Password toggle  */
+    document.getElementById("pwToggle").addEventListener("click", () => {
+      const pw = document.getElementById("password");
+      const open = document.getElementById("eyeOpen");
+      const closed = document.getElementById("eyeClosed");
+      if (pw.type === "password") {
+        pw.type = "text";
+        open.style.display = "none";
+        closed.style.display = "block";
+      } else {
+        pw.type = "password";
+        open.style.display = "block";
+        closed.style.display = "none";
+      }
+    });
+
+    /*  Login form  */
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("loginBtn");
+      const errorEl = document.getElementById("loginError");
+      const card = document.querySelector(".login-card");
+
+      btn.classList.add("loading");
+      btn.disabled = true;
+      errorEl.textContent = "";
+
+      try {
+        const res = await fetch(`${API}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value,
+          }),
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem("user", data.username);
+          btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Success!`;
+          btn.style.background = "linear-gradient(135deg,#22c55e,#16a34a)";
+          btn.style.boxShadow = "0 4px 20px rgba(34,197,94,.4)";
+          setTimeout(() => { window.location.href = "index.html"; }, 400);
+        } else {
+          errorEl.textContent = data.error || "Invalid credentials";
+          card.classList.add("shake");
+          setTimeout(() => card.classList.remove("shake"), 500);
+          btn.classList.remove("loading");
+          btn.disabled = false;
+        }
+      } catch (err) {
+        errorEl.textContent = "Cannot reach server. Is it running?";
+        card.classList.add("shake");
+        setTimeout(() => card.classList.remove("shake"), 500);
+        btn.classList.remove("loading");
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+*.pyc
+__pycache__/
+
+# Environment secrets — NEVER commit these
+backend/.env
+.env
+.env.*
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+*.swp
+
+# Agent / planning files
+.agent/

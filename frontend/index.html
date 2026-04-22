@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="StudOps  Smart Student Management & Performance Analysis Dashboard">
+  <title>StudOps  Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <!-- Motion (Framer Motion) for browser  mini build -->
+  <script src="https://cdn.jsdelivr.net/npm/motion@12.38.0/dist/motion.min.js"></script>
+  <style>
+    /* Topper card */
+    .topper-card {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 20px; border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(34,197,94,.1), rgba(6,182,212,.08));
+      border: 1px solid rgba(34,197,94,.2);
+      margin-bottom: var(--space-lg);
+    }
+    .topper-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #22c55e, #06b6d4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 800; color: #fff; flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(34,197,94,.35);
+    }
+    .topper-info { flex: 1; }
+    .topper-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #4ade80; }
+    .topper-name  { font-size: 1.05rem; font-weight: 700; color: var(--color-text); margin-top: 2px; }
+    .topper-score { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 800; color: #4ade80; }
+    .topper-score span { font-size: .75rem; color: var(--color-text-secondary); font-weight: 400; font-family: var(--font-family); }
+
+    /* Nav badge for at-risk count */
+    .sidebar-mobile-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px); z-index: 99;
+    }
+    .sidebar-mobile-overlay.active { display: block; }
+  </style>
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="app-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-mobile-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-layout">
+
+    <!--  SIDEBAR  -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>
+          </svg>
+        </div>
+        <div class="brand-text"><span>Stud</span>Ops</div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li class="sidebar-section-label">Main</li>
+        <li><a href="#" class="active" data-page="dashboard" id="nav-dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          Dashboard
+        </a></li>
+        <li><a href="#" data-page="students" id="nav-students">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Students
+          <span class="nav-count" id="navStudentCount"></span>
+        </a></li>
+        <li><a href="#" data-page="analytics" id="nav-analytics">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          Analytics
+        </a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-ghost" style="width:100%;justify-content:flex-start;gap:10px;color:var(--color-text-secondary);" id="logoutBtn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!--  MAIN CONTENT  -->
+    <main class="main-content">
+
+      <!-- Top bar -->
+      <div class="topbar">
+        <div class="flex items-center gap-md">
+          <button class="hamburger btn-icon btn-ghost" id="menuToggle" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle theme">
+            <svg id="themeIconDark" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg id="themeIconLight" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </button>
+          <div class="user-chip">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <span id="welcomeUser"></span>
+          </div>
+        </div>
+      </div>
+
+      <!--  DASHBOARD PAGE  -->
+      <section id="page-dashboard">
+        <div class="metric-grid" id="metricCards"></div>
+
+        <!-- Stat pills -->
+        <div class="stat-row" id="statRow"></div>
+
+        <!-- Topper card -->
+        <div id="topperCard"></div>
+
+        <div class="charts-grid">
+          <div class="chart-card"><h3>Pass vs Fail</h3>
+            <div class="chart-wrap">
+              <div id="passfailChart" style="width:100%;"></div>
+            </div>
+          </div>
+          <div class="chart-card"><h3>Grade Distribution</h3>          <div class="chart-wrap">
+            <canvas id="gradeChart" height="220"></canvas>
+          </div></div>
+        </div>
+
+        <div class="card" style="margin-top:var(--space-lg)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-md)">
+            <h3 style="font-weight:700;font-size:1rem;">At-Risk Students</h3>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge badge-risk" id="atRiskBadge"></span>
+              <button class="refresh-btn" id="dashRefreshBtn" title="Refresh dashboard">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Roll No</th><th>Name</th><th>Marks</th><th>Attendance</th><th>Status</th>
+              </tr></thead>
+              <tbody id="atRiskBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!--  STUDENTS PAGE  -->
+      <section id="page-students" class="hidden">
+        <div class="filter-bar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input class="form-input" id="searchInput" placeholder="Search by name or roll number&hellip; (Ctrl+F)">
+            <button class="search-clear" id="searchClear" title="Clear search" aria-label="Clear">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <select class="form-input" id="filterGrade">
+            <option value="">All Grades</option><option value="A">Grade A</option>
+            <option value="B">Grade B</option><option value="C">Grade C</option><option value="Fail">Fail</option>
+          </select>
+          <select class="form-input" id="filterStatus">
+            <option value="">All Status</option><option value="Safe">Safe</option><option value="At Risk">At Risk</option>
+          </select>
+          <select class="form-input" id="filterAttendance">
+            <option value="">All Attendance</option><option value="90+">90%+</option>
+            <option value="75-89">75&ndash;89%</option><option value="<75">&lt;75%</option>
+          </select>
+          <button class="btn btn-primary" id="addStudentBtn" title="Add new student (Ctrl+N)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add Student
+            <span class="kbd">Ctrl+N</span>
+          </button>
+          <button class="btn btn-secondary" id="exportBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export CSV
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-sort="roll_no" class="active">Roll No <span class="sort-arrow">&#9650;</span></th>
+                <th data-sort="name">Name <span class="sort-arrow">&#9650;</span></th>
+                <th data-sort="marks">Marks <span class="sort-arrow">&#9650;</span></th>
+                <th data-sort="attendance">Attendance <span class="sort-arrow">&#9650;</span></th>
+                <th>Grade</th><th>Status</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination" id="pagination">
+          <span id="paginationInfo"></span>
+          <div class="pagination-btns" id="paginationBtns"></div>
+        </div>
+      </section>
+
+      <!--  ANALYTICS PAGE  -->
+      <section id="page-analytics" class="hidden">
+        <div class="charts-grid">
+          <div class="chart-card"><h3>Marks Distribution</h3>          <div class="chart-wrap">
+            <canvas id="marksDistChart" height="220"></canvas>
+          </div></div>
+          <div class="chart-card"><h3>Risk Breakdown</h3>
+            <div class="chart-wrap">
+              <div id="riskChart" style="width:100%;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="charts-grid" style="margin-top:var(--space-lg)">
+          <div class="chart-card"><h3>Marks vs Attendance</h3>          <div class="chart-wrap">
+            <canvas id="scatterChart" height="220"></canvas>
+          </div></div>
+          <div class="chart-card">
+            <h3>Top &amp; Bottom Performers</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);margin-top:var(--space-md)">
+              <div>
+                <h4 style="font-size:.75rem;color:#4ade80;margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">
+                  Top 5
+                </h4>
+                <div id="topPerformers"></div>
+              </div>
+              <div>
+                <h4 style="font-size:.75rem;color:#f87171;margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">
+                  Bottom 5
+                </h4>
+                <div id="bottomPerformers"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!--  ADD/EDIT STUDENT MODAL  -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add New Student</h2>
+        <button class="btn btn-icon btn-ghost" id="modalClose" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <form class="modal-body" id="studentForm">
+        <div class="form-group">
+          <label class="form-label" for="sName">Full Name *</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input class="form-input" id="sName" type="text" placeholder="Enter full name" required minlength="2">
+          </div>
+          <span class="form-error" id="errName"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="sRoll">Roll Number *</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="18" y2="18"/>
+            </svg>
+            <input class="form-input" id="sRoll" type="number" placeholder="Enter roll number" required min="1">
+          </div>
+          <span class="form-error" id="errRoll"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="sMarks">Marks (0100) *</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+            </svg>
+            <input class="form-input" id="sMarks" type="number" placeholder="Enter marks" required min="0" max="100">
+          </div>
+          <span class="form-error" id="errMarks"></span>
+          <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
+            <span style="font-size:.78rem;color:var(--color-text-secondary)">Grade preview:</span>
+            <span class="badge" id="previewGrade"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="sAttendance">Attendance % (0100) *</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <input class="form-input" id="sAttendance" type="number" placeholder="Enter attendance %" required min="0" max="100">
+          </div>
+          <span class="form-error" id="errAtt"></span>
+          <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
+            <span style="font-size:.78rem;color:var(--color-text-secondary)">Status preview:</span>
+            <span class="badge" id="previewStatus"></span>
+          </div>
+        </div>
+        <input type="hidden" id="sId">
+      </form>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+        <button class="btn btn-primary" id="modalSave">Save Student</button>
+      </div>
+    </div>
+  </div>
+
+  <!--  CONFIRM DELETE MODAL  -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-header">
+        <h2>Confirm Delete</h2>
+        <button class="btn btn-icon btn-ghost" id="confirmClose">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body confirm-body">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <p>Are you sure you want to delete <strong id="delName"></strong>?</p>
+        <p style="font-size:.78rem;margin-top:8px;color:var(--color-text-disabled)">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
+        <button class="btn btn-danger" id="confirmDelete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="radial-chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

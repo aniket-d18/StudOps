@@ -1,0 +1,338 @@
+================================================================================
+PRODUCT REQUIREMENTS DOCUMENT (PRD)
+================================================================================
+
+PRODUCT TITLE
+Smart Student Management & Performance Analysis System using MongoDB
+
+VERSION: 1.0
+DATE: April 22, 2026
+STATUS: Draft
+
+
+================================================================================
+OBJECTIVE
+================================================================================
+
+To develop a web-based system that manages student records while providing 
+performance insights, risk detection, and analytics using MongoDB as the 
+backend database. The system aims to go beyond basic CRUD operations by 
+enabling data-driven decision-making for student performance tracking.
+
+
+================================================================================
+TARGET USERS
+================================================================================
+
+* Teachers - For tracking and managing student performance
+* Educational institutions - For institutional-level analytics
+* Admin staff - For data management and reporting
+
+
+================================================================================
+TECH STACK
+================================================================================
+
+Frontend:  HTML, CSS, JavaScript
+Backend:   Python (Flask)
+Database:  MongoDB Atlas (via PyMongo)
+
+
+================================================================================
+CORE FEATURES
+================================================================================
+
+1. STUDENT MANAGEMENT (CRUD)
+   --------------------------
+   * Add new student (name, roll number, marks, attendance)
+   * View all students in a structured table
+   * Edit student details
+   * Delete student records
+
+
+2. SMART GRADE CALCULATION
+   ------------------------
+   Automatically assign grades based on marks:
+   * 90+ → A
+   * 75–89 → B
+   * 50–74 → C
+   * Below 50 → Fail
+
+
+3. AT-RISK STUDENT DETECTION ⭐
+   ----------------------------
+   System identifies students needing attention:
+   * Marks < 50 OR Attendance < 75% → "At Risk"
+   * Otherwise → "Safe"
+   
+   Displayed visually to highlight critical cases.
+
+
+4. SEARCH & FILTER SYSTEM
+   -----------------------
+   * Search by name or roll number
+   * Filter by:
+     - Grade
+     - Attendance range
+     - At-risk students
+
+
+5. PERFORMANCE DASHBOARD 📊
+   -------------------------
+   Displays:
+   * Total number of students
+   * Average marks
+   * Class topper
+   * Pass vs Fail count
+   * Average attendance
+
+
+6. ANALYTICS MODULE
+   -----------------
+   Separate analytics view:
+   * Highest marks
+   * Lowest marks
+   * Performance distribution
+
+
+7. DATA EXPORT FEATURE 📤
+   -----------------------
+   * Export student records as CSV file
+   * Enables reporting and external analysis
+
+
+8. AUTHENTICATION (BASIC LOGIN SYSTEM)
+   ------------------------------------
+   * Simple login page
+   * Restricts access to authorized users
+
+
+================================================================================
+SYSTEM ARCHITECTURE
+================================================================================
+
+Flow:
+  Frontend (HTML/CSS/JS)
+          ↓
+  Flask Backend (API & Logic)
+          ↓
+  MongoDB Atlas (Cloud Database)
+
+
+================================================================================
+DATABASE DESIGN (MONGODB DOCUMENT)
+================================================================================
+
+Collection Name: students
+
+Document Structure:
+{
+  "name": "Vansh",
+  "roll_no": 101,
+  "marks": 85,
+  "attendance": 90,
+  "grade": "B",
+  "status": "Safe"
+}
+
+Field Descriptions:
+* name (String) - Student's full name
+* roll_no (Integer) - Unique roll number identifier
+* marks (Integer) - Total marks obtained (0-100)
+* attendance (Integer) - Attendance percentage (0-100)
+* grade (String) - Calculated grade (A/B/C/Fail)
+* status (String) - Risk status (Safe/At Risk)
+
+
+================================================================================
+FUNCTIONAL FLOW
+================================================================================
+
+1. User logs into system
+2. Adds/edits student data
+3. Backend processes and stores data in MongoDB
+4. System calculates grade and risk status
+5. Data displayed in dashboard and tables
+6. User can search, filter, or export data
+
+
+================================================================================
+UI REQUIREMENTS
+================================================================================
+
+Design Principles:
+* Clean and simple interface
+* Table-based student display
+* Responsive layout
+
+Color Indicators:
+* Green → Good performance
+* Red → At-risk students
+* Neutral colors for normal status
+
+Action Buttons:
+* Add (New Student)
+* Edit (Modify Record)
+* Delete (Remove Record)
+
+Additional Elements:
+* Search bar prominently displayed
+* Filter dropdowns easily accessible
+* Dashboard cards for key metrics
+* Export button clearly visible
+
+
+================================================================================
+KEY DIFFERENTIATORS
+================================================================================
+
+* Combines CRUD with analytics
+* Real-time risk detection system
+* Data export capability
+* Dashboard-driven insights
+* Automated grade calculation
+* Performance monitoring at a glance
+
+
+================================================================================
+FUTURE SCOPE
+================================================================================
+
+Phase 2 Enhancements:
+* Integration with machine learning for performance prediction
+* Mobile application support (iOS/Android)
+* Multi-user roles (Admin, Teacher, Viewer)
+* Real-time notifications for at-risk students
+* Parent portal access
+* Attendance tracking integration
+* Report card generation
+* Historical performance trends
+* Bulk data import functionality
+* Advanced analytics and visualizations
+
+
+================================================================================
+SUCCESS CRITERIA
+================================================================================
+
+Technical Requirements:
+✓ Fully functional CRUD operations
+✓ Accurate grade and risk calculation
+✓ Responsive UI across devices
+✓ Successful MongoDB Atlas integration
+✓ Clean, error-free execution
+
+Performance Requirements:
+✓ Page load time < 2 seconds
+✓ Database query response < 500ms
+✓ Support for 1000+ student records
+
+User Experience Requirements:
+✓ Intuitive navigation
+✓ Clear visual indicators
+✓ Easy data entry and modification
+✓ Accessible export functionality
+
+
+================================================================================
+NON-FUNCTIONAL REQUIREMENTS
+================================================================================
+
+Security:
+* Secure authentication mechanism
+* Password protection for login
+* Data validation on all inputs
+* Protection against SQL injection (MongoDB)
+
+Performance:
+* Fast database queries using proper indexing
+* Efficient data retrieval and display
+* Minimal API response time
+
+Scalability:
+* Support for growing student database
+* Modular code structure for future enhancements
+
+Reliability:
+* Error handling for all operations
+* Data backup and recovery mechanisms
+* Graceful failure handling
+
+
+================================================================================
+TECHNICAL SPECIFICATIONS
+================================================================================
+
+API Endpoints (Flask Routes):
+* POST   /api/students        - Add new student
+* GET    /api/students        - Get all students
+* GET    /api/students/:id    - Get student by ID
+* PUT    /api/students/:id    - Update student
+* DELETE /api/students/:id    - Delete student
+* GET    /api/dashboard       - Get dashboard metrics
+* GET    /api/analytics       - Get analytics data
+* POST   /api/export          - Export data to CSV
+
+Frontend Pages:
+* login.html          - Authentication page
+* dashboard.html      - Main dashboard view
+* students.html       - Student list and management
+* analytics.html      - Analytics and insights
+* add_student.html    - Add new student form
+* edit_student.html   - Edit student form
+
+
+================================================================================
+DEPENDENCIES
+================================================================================
+
+Python Libraries:
+* Flask - Web framework
+* PyMongo - MongoDB driver
+* Flask-CORS - Cross-origin resource sharing
+* Pandas - Data manipulation (for CSV export)
+
+External Services:
+* MongoDB Atlas - Cloud database service
+
+
+================================================================================
+ASSUMPTIONS & CONSTRAINTS
+================================================================================
+
+Assumptions:
+* Users have basic computer literacy
+* Stable internet connection available
+* MongoDB Atlas account configured
+* Single institution deployment initially
+
+Constraints:
+* Basic authentication (not OAuth/SSO)
+* Limited to student academic data
+* English language only (initial version)
+* Web-only interface (no mobile app in v1.0)
+
+
+================================================================================
+SUMMARY
+================================================================================
+
+This system transforms traditional student record management into an 
+intelligent platform that not only stores data but also analyzes and 
+highlights critical insights for better decision-making. By combining 
+essential CRUD operations with automated analytics and risk detection, 
+the system empowers educators to proactively support student success.
+
+
+================================================================================
+DOCUMENT INFORMATION
+================================================================================
+
+Created by: Development Team
+Last Updated: April 22, 2026
+Document Version: 1.0
+Review Status: Pending Approval
+
+================================================================================
+END OF DOCUMENT
+================================================================================
