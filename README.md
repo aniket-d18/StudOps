@@ -180,4 +180,4 @@ StudOps/
 
 ## License
 
-MIT © [Vansh Bhat](https://github.com/aniket-d18)
+MIT © [Aniket Chaudhari](https://github.com/aniket-d18)
