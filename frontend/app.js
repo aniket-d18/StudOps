@@ -5,10 +5,10 @@
 const API = "/api";
 
 //  State 
-let currentPage  = 1;
-let pageLimit    = 25;
-let sortField    = "roll_no";
-let sortOrder    = "asc";
+let currentPage = 1;
+let pageLimit = 25;
+let sortField = "roll_no";
+let sortOrder = "asc";
 let deleteTargetId = null;
 let chartInstances = {};
 
@@ -40,9 +40,9 @@ if (avatar) avatar.textContent = userName.charAt(0).toUpperCase();
 function toast(message, type = "success") {
   const icons = {
     success: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
-    error:   `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    error: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
     warning: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>`,
-    info:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    info: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
   };
   const container = document.getElementById("toastContainer");
   const el = document.createElement("div");
@@ -72,7 +72,7 @@ function switchPage(page) {
   document.getElementById("pageTitle").textContent = titles[page] || page;
 
   if (page === "dashboard") loadDashboard();
-  if (page === "students")  loadStudents();
+  if (page === "students") loadStudents();
   if (page === "analytics") loadAnalytics();
 
   // Close sidebar on mobile
@@ -95,7 +95,7 @@ if (overlay) overlay.addEventListener("click", () => {
 
 // Logout
 document.getElementById("logoutBtn").addEventListener("click", async () => {
-  try { await fetch(`${API}/logout`, { method: "POST", credentials: "include" }); } catch (_) {}
+  try { await fetch(`${API}/logout`, { method: "POST", credentials: "include" }); } catch (_) { }
   localStorage.removeItem("user");
   window.location.href = "login.html";
 });
@@ -153,7 +153,7 @@ async function loadDashboard() {
       fetch(`${API}/dashboard`),
       fetch(`${API}/analytics`),
     ]);
-    const data    = await dashRes.json();
+    const data = await dashRes.json();
     const analytics = await analyticsRes.json();
 
     //  Metric cards 
@@ -223,18 +223,18 @@ async function loadDashboard() {
     destroyChart("passfailChart");
     window._radialCharts["passfailChart"] = new RadialProgressChart(
       document.getElementById("passfailChart"), {
-        values: [
-          data.total > 0 ? (data.pass_count || 0) / data.total : 0,
-          data.total > 0 ? (data.fail_count || 0) / data.total : 0,
-        ],
-        colors: [
-          ['#14b8a6', '#0ea5e9'],
-          ['#fb7185', '#f43f5e'],
-        ],
-        labels: [`Pass (${pfPassRate}%)`, `Fail (${pfFailRate}%)`],
-        centerValue: `${pfPassRate}%`,
-        centerLabel: 'Pass Rate',
-      }
+      values: [
+        data.total > 0 ? (data.pass_count || 0) / data.total : 0,
+        data.total > 0 ? (data.fail_count || 0) / data.total : 0,
+      ],
+      colors: [
+        ['#14b8a6', '#0ea5e9'],
+        ['#fb7185', '#f43f5e'],
+      ],
+      labels: [`Pass (${pfPassRate}%)`, `Fail (${pfFailRate}%)`],
+      centerValue: `${pfPassRate}%`,
+      centerLabel: 'Pass Rate',
+    }
     );
 
     //  Grade Distribution  clay bar with canvas-aware gradients 
@@ -297,8 +297,8 @@ async function loadDashboard() {
   try {
     const statsRes = await fetch(`${API}/dashboard`);
     const statsData = await statsRes.json();
-    const passRate = statsData.total > 0 ? Math.round(((statsData.pass_count||0) / statsData.total) * 100) : 0;
-    const riskPct  = statsData.total > 0 ? Math.round(((statsData.at_risk_count||0) / statsData.total) * 100) : 0;
+    const passRate = statsData.total > 0 ? Math.round(((statsData.pass_count || 0) / statsData.total) * 100) : 0;
+    const riskPct = statsData.total > 0 ? Math.round(((statsData.at_risk_count || 0) / statsData.total) * 100) : 0;
     const statRow = document.getElementById("statRow");
     if (statRow) statRow.innerHTML = `
       <div class="stat-pill">
@@ -321,7 +321,7 @@ async function loadDashboard() {
       </div>`;
     const nc = document.getElementById("navStudentCount");
     if (nc && statsData.total > 0) nc.textContent = statsData.total;
-  } catch(_) {}
+  } catch (_) { }
 }
 
 // 
@@ -338,7 +338,7 @@ async function loadStudents() {
   });
 
   try {
-    const res  = await fetch(`${API}/students?${params}`);
+    const res = await fetch(`${API}/students?${params}`);
     const data = await res.json();
     const tbody = document.getElementById("studentsBody");
 
@@ -362,7 +362,7 @@ async function loadStudents() {
               <button class="btn btn-icon btn-ghost" onclick="editStudent('${s._id}')" title="Edit" style="color:var(--color-primary-light)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               </button>
-              <button class="btn btn-icon btn-ghost" onclick="confirmDeleteStudent('${s._id}','${s.name.replace(/'/g,"\\'")}') " title="Delete" style="color:var(--color-error)">
+              <button class="btn btn-icon btn-ghost" onclick="confirmDeleteStudent('${s._id}','${s.name.replace(/'/g, "\\'")}') " title="Delete" style="color:var(--color-error)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
               </button>
             </div>
@@ -372,7 +372,7 @@ async function loadStudents() {
 
     // Pagination
     const start = (data.page - 1) * data.limit + 1;
-    const end   = Math.min(data.page * data.limit, data.total);
+    const end = Math.min(data.page * data.limit, data.total);
     document.getElementById("paginationInfo").textContent = data.total ? `Showing ${start}–${end} of ${data.total}` : "";
 
     let html = `<button ${data.page <= 1 ? "disabled" : ""} onclick="goPage(${data.page - 1})">&lsaquo;</button>`;
@@ -392,7 +392,7 @@ document.getElementById("searchInput").addEventListener("input", () => {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { currentPage = 1; loadStudents(); }, 320);
 });
-["filterGrade","filterStatus","filterAttendance"].forEach((id) =>
+["filterGrade", "filterStatus", "filterAttendance"].forEach((id) =>
   document.getElementById(id).addEventListener("change", () => { currentPage = 1; loadStudents(); })
 );
 document.querySelectorAll("thead th[data-sort]").forEach((th) => {
@@ -409,7 +409,7 @@ document.querySelectorAll("thead th[data-sort]").forEach((th) => {
 
 //  MODAL 
 const studentModal = document.getElementById("studentModal");
-const studentForm  = document.getElementById("studentForm");
+const studentForm = document.getElementById("studentForm");
 
 function openModal(title = "Add New Student") {
   document.getElementById("modalTitle").textContent = title;
@@ -422,7 +422,7 @@ function closeModal() {
   document.getElementById("sId").value = "";
   document.getElementById("previewGrade").textContent = "";
   document.getElementById("previewStatus").textContent = "";
-  ["errName","errRoll","errMarks","errAtt"].forEach((id) => document.getElementById(id).textContent = "");
+  ["errName", "errRoll", "errMarks", "errAtt"].forEach((id) => document.getElementById(id).textContent = "");
 }
 
 document.getElementById("addStudentBtn").addEventListener("click", () => openModal("Add New Student"));
@@ -434,12 +434,12 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeMod
 // Live grade/status preview
 function updatePreview() {
   const marks = parseInt(document.getElementById("sMarks").value) || 0;
-  const att   = parseInt(document.getElementById("sAttendance").value) || 0;
+  const att = parseInt(document.getElementById("sAttendance").value) || 0;
   let grade, cls;
-  if (marks >= 90)      { grade = "A"; cls = "badge-a"; }
+  if (marks >= 90) { grade = "A"; cls = "badge-a"; }
   else if (marks >= 75) { grade = "B"; cls = "badge-b"; }
   else if (marks >= 50) { grade = "C"; cls = "badge-c"; }
-  else                  { grade = "Fail"; cls = "badge-fail"; }
+  else { grade = "Fail"; cls = "badge-fail"; }
   const pg = document.getElementById("previewGrade");
   pg.textContent = grade; pg.className = `badge ${cls}`;
   const status = (marks < 50 || att < 75) ? "At Risk" : "Safe";
@@ -451,28 +451,30 @@ document.getElementById("sAttendance").addEventListener("input", updatePreview);
 
 // Save
 document.getElementById("modalSave").addEventListener("click", async () => {
-  const name       = document.getElementById("sName").value.trim();
-  const roll_no    = document.getElementById("sRoll").value;
-  const marks      = document.getElementById("sMarks").value;
+  const name = document.getElementById("sName").value.trim();
+  const roll_no = document.getElementById("sRoll").value;
+  const marks = document.getElementById("sMarks").value;
   const attendance = document.getElementById("sAttendance").value;
-  const editId     = document.getElementById("sId").value;
+  const editId = document.getElementById("sId").value;
 
   let valid = true;
   const set = (id, msg) => { document.getElementById(id).textContent = msg; if (msg) valid = false; };
-  set("errName",  !name || name.length < 2 ? "Name required (min 2 chars)" : "");
-  set("errRoll",  !roll_no || roll_no < 1   ? "Valid roll number required" : "");
-  set("errMarks", marks === "" || marks < 0 || marks > 100 ? "Marks must be 0100" : "");
-  set("errAtt",   attendance === "" || attendance < 0 || attendance > 100 ? "Attendance must be 0100" : "");
+  set("errName", !name || name.length < 2 ? "Name required (min 2 chars)" : "");
+  set("errRoll", !roll_no || roll_no < 1 ? "Valid roll number required" : "");
+  set("errMarks", marks === "" || marks < 0 || marks > 100 ? "Marks must be 0 to 100" : "");
+  set("errAtt", attendance === "" || attendance < 0 || attendance > 100 ? "Attendance must be 0 to 100" : "");
   if (!valid) return;
 
   const btn = document.getElementById("modalSave");
   btn.disabled = true; btn.textContent = "Saving";
 
   try {
-    const url    = editId ? `${API}/students/${editId}` : `${API}/students`;
+    const url = editId ? `${API}/students/${editId}` : `${API}/students`;
     const method = editId ? "PUT" : "POST";
-    const res    = await fetch(url, { method, headers: { "Content-Type": "application/json" }, credentials: "include",
-      body: JSON.stringify({ name, roll_no: parseInt(roll_no), marks: parseInt(marks), attendance: parseInt(attendance) }) });
+    const res = await fetch(url, {
+      method, headers: { "Content-Type": "application/json" }, credentials: "include",
+      body: JSON.stringify({ name, roll_no: parseInt(roll_no), marks: parseInt(marks), attendance: parseInt(attendance) })
+    });
     const data = await res.json();
     if (!res.ok) { toast(data.error || "Failed to save", "error"); return; }
     toast(editId ? "Student updated!" : "Student added successfully!", "success");
@@ -485,11 +487,11 @@ document.getElementById("modalSave").addEventListener("click", async () => {
 async function editStudent(id) {
   try {
     const res = await fetch(`${API}/students/${id}`);
-    const s   = await res.json();
-    document.getElementById("sId").value         = s._id;
-    document.getElementById("sName").value       = s.name;
-    document.getElementById("sRoll").value       = s.roll_no;
-    document.getElementById("sMarks").value      = s.marks;
+    const s = await res.json();
+    document.getElementById("sId").value = s._id;
+    document.getElementById("sName").value = s.name;
+    document.getElementById("sRoll").value = s.roll_no;
+    document.getElementById("sMarks").value = s.marks;
     document.getElementById("sAttendance").value = s.attendance;
     updatePreview(); openModal("Edit Student");
   } catch { toast("Failed to load student", "error"); }
@@ -522,10 +524,10 @@ document.getElementById("confirmDelete").addEventListener("click", async () => {
 // Export
 document.getElementById("exportBtn").addEventListener("click", async () => {
   try {
-    const res  = await fetch(`${API}/export`, { method: "POST", credentials: "include" });
+    const res = await fetch(`${API}/export`, { method: "POST", credentials: "include" });
     const blob = await res.blob();
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
     a.href = url; a.download = "students_export.csv"; a.click();
     URL.revokeObjectURL(url);
     toast("CSV exported!", "success");
@@ -537,7 +539,7 @@ document.getElementById("exportBtn").addEventListener("click", async () => {
 // 
 async function loadAnalytics() {
   try {
-    const res  = await fetch(`${API}/analytics`);
+    const res = await fetch(`${API}/analytics`);
     const data = await res.json();
 
     // Marks Distribution  canvas-aware gradient callback
@@ -565,7 +567,8 @@ async function loadAnalytics() {
       },
       options: {
         responsive: true,
-        plugins: { legend: { display: false },
+        plugins: {
+          legend: { display: false },
           tooltip: { callbacks: { label: (c) => ` ${c.raw} student${c.raw !== 1 ? "s" : ""}` } },
         },
         scales: {
@@ -577,31 +580,31 @@ async function loadAnalytics() {
     });
     // Risk Breakdown — RadialProgressChart (4 concentric rings)
     const rb = data.risk_breakdown;
-    const riskTotal = (rb.safe||0) + (rb.low_marks||0) + (rb.low_attendance||0) + (rb.both||0);
+    const riskTotal = (rb.safe || 0) + (rb.low_marks || 0) + (rb.low_attendance || 0) + (rb.both || 0);
     destroyChart("riskChart");
     window._radialCharts["riskChart"] = new RadialProgressChart(
       document.getElementById("riskChart"), {
-        values: [
-          riskTotal > 0 ? (rb.safe||0) / riskTotal : 0,
-          riskTotal > 0 ? (rb.low_marks||0) / riskTotal : 0,
-          riskTotal > 0 ? (rb.low_attendance||0) / riskTotal : 0,
-          riskTotal > 0 ? (rb.both||0) / riskTotal : 0,
-        ],
-        colors: [
-          ['#14b8a6', '#06b6d4'],
-          ['#fb7185', '#f43f5e'],
-          ['#fbbf24', '#f59e0b'],
-          ['#c084fc', '#a855f7'],
-        ],
-        labels: [
-          `Safe (${rb.safe||0})`,
-          `Low Marks (${rb.low_marks||0})`,
-          `Low Att. (${rb.low_attendance||0})`,
-          `Both (${rb.both||0})`,
-        ],
-        centerValue: rb.safe || 0,
-        centerLabel: 'Safe',
-      }
+      values: [
+        riskTotal > 0 ? (rb.safe || 0) / riskTotal : 0,
+        riskTotal > 0 ? (rb.low_marks || 0) / riskTotal : 0,
+        riskTotal > 0 ? (rb.low_attendance || 0) / riskTotal : 0,
+        riskTotal > 0 ? (rb.both || 0) / riskTotal : 0,
+      ],
+      colors: [
+        ['#14b8a6', '#06b6d4'],
+        ['#fb7185', '#f43f5e'],
+        ['#fbbf24', '#f59e0b'],
+        ['#c084fc', '#a855f7'],
+      ],
+      labels: [
+        `Safe (${rb.safe || 0})`,
+        `Low Marks (${rb.low_marks || 0})`,
+        `Low Att. (${rb.low_attendance || 0})`,
+        `Both (${rb.both || 0})`,
+      ],
+      centerValue: rb.safe || 0,
+      centerLabel: 'Safe',
+    }
     );
 
 
@@ -611,34 +614,40 @@ async function loadAnalytics() {
       type: "scatter",
       data: {
         datasets: [
-          { label: "Safe", data: data.scatter.filter(s => s.status === "Safe").map(s => ({ x: s.attendance, y: s.marks })),
-            backgroundColor: "rgba(20,184,166,.75)", pointRadius: 7, pointHoverRadius: 10, pointBorderWidth: 0 },
-          { label: "At Risk", data: data.scatter.filter(s => s.status === "At Risk").map(s => ({ x: s.attendance, y: s.marks })),
-            backgroundColor: "rgba(251,113,133,.75)", pointRadius: 7, pointHoverRadius: 10, pointBorderWidth: 0 },
+          {
+            label: "Safe", data: data.scatter.filter(s => s.status === "Safe").map(s => ({ x: s.attendance, y: s.marks })),
+            backgroundColor: "rgba(20,184,166,.75)", pointRadius: 7, pointHoverRadius: 10, pointBorderWidth: 0
+          },
+          {
+            label: "At Risk", data: data.scatter.filter(s => s.status === "At Risk").map(s => ({ x: s.attendance, y: s.marks })),
+            backgroundColor: "rgba(251,113,133,.75)", pointRadius: 7, pointHoverRadius: 10, pointBorderWidth: 0
+          },
         ],
       },
-      options: { responsive: true,
+      options: {
+        responsive: true,
         scales: {
           x: { title: { display: true, text: "Attendance %", color: "#64748b" }, min: 0, max: 100, grid: { color: "rgba(255,255,255,0.04)", drawBorder: false }, ticks: { color: "#64748b" } },
           y: { title: { display: true, text: "Marks", color: "#64748b" }, min: 0, max: 100, grid: { color: "rgba(255,255,255,0.04)", drawBorder: false }, ticks: { color: "#64748b" } },
         },
         plugins: { legend: { position: "bottom", labels: { usePointStyle: true, color: "#94a3b8" } } },
-        animation: { duration: 900, easing: "easeOutQuart" } },
+        animation: { duration: 900, easing: "easeOutQuart" }
+      },
     });
 
     // Top & Bottom performers
-    const rankColors = ["#fbbf24","#94a3b8","#cd7c2f"];
+    const rankColors = ["#fbbf24", "#94a3b8", "#cd7c2f"];
     function performerList(students, colorFn) {
       return students.map((s, i) => `
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-          <span style="width:22px;height:22px;border-radius:50%;background:${colorFn(i)};display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#0f172a;flex-shrink:0">${i+1}</span>
+          <span style="width:22px;height:22px;border-radius:50%;background:${colorFn(i)};display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#0f172a;flex-shrink:0">${i + 1}</span>
           <span style="flex:1;font-weight:500;font-size:.85rem;color:var(--color-text)">${s.name}</span>
           <span style="font-family:var(--font-mono);font-size:.85rem;font-weight:700;color:var(--color-primary-light)">${s.marks}</span>
         </div>`).join("");
     }
-    const topColor    = (i) => i === 0 ? "#fbbf24" : i === 1 ? "#94a3b8" : i === 2 ? "#cd7c2f" : "rgba(34,197,94,.3)";
+    const topColor = (i) => i === 0 ? "#fbbf24" : i === 1 ? "#94a3b8" : i === 2 ? "#cd7c2f" : "rgba(34,197,94,.3)";
     const bottomColor = () => "rgba(239,68,68,.25)";
-    document.getElementById("topPerformers").innerHTML    = performerList(data.top_performers, topColor);
+    document.getElementById("topPerformers").innerHTML = performerList(data.top_performers, topColor);
     document.getElementById("bottomPerformers").innerHTML = performerList(data.bottom_performers, bottomColor);
 
   } catch (err) { toast("Failed to load analytics", "error"); console.error(err); }
@@ -753,7 +762,7 @@ if (dashRefreshBtn) {
 // 
 async function updateStatPills(data) {
   const passRate = data.total > 0 ? Math.round((data.pass_count / data.total) * 100) : 0;
-  const riskPct  = data.total > 0 ? Math.round((data.at_risk_count / data.total) * 100) : 0;
+  const riskPct = data.total > 0 ? Math.round((data.at_risk_count / data.total) * 100) : 0;
 
   const statRow = document.getElementById("statRow");
   if (!statRow) return;

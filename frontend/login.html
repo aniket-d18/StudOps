@@ -6,7 +6,7 @@
   <meta name="description" content="StudOps  Smart Student Management System Login">
   <title>Login  StudOps</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
     /* Login-page specific extras */
@@ -74,7 +74,10 @@
             <path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>
           </svg>
         </div>
-        <div class="logo-name"><span>Stud</span>Ops</div>
+        <div>
+          <div class="logo-name"><span>Stud</span>Ops</div>
+          <div style="font-size:.58rem;color:var(--color-text-disabled);letter-spacing:.12em;text-transform:uppercase;margin-top:2px;font-weight:500">Smart Performance Analytics</div>
+        </div>
       </div>
 
       <h1>Welcome back</h1>
@@ -130,15 +133,23 @@
         <span class="btn-login-spinner"></span>
       </button>
 
-      <div class="login-divider">Default credentials</div>
-      <div class="login-hint">
-        Username: <strong>admin</strong> &nbsp;/&nbsp; Password: <strong>admin123</strong>
-      </div>
 
     </form>
   </div>
 
   <script>
+    /* Ripple on login button */
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn');
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const rip = document.createElement('span');
+      rip.className = 'ripple-circle';
+      rip.style.cssText = `left:${e.clientX-rect.left-4}px;top:${e.clientY-rect.top-4}px;position:absolute;border-radius:50%;width:8px;height:8px;background:rgba(255,255,255,.35);transform:scale(0);animation:ripple .55s linear;pointer-events:none;`;
+      btn.appendChild(rip);
+      rip.addEventListener('animationend', () => rip.remove());
+    });
+
     const API = "/api";
 
     /*  Floating dots  */

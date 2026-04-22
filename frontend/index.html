@@ -6,7 +6,7 @@
   <meta name="description" content="StudOps  Smart Student Management & Performance Analysis Dashboard">
   <title>StudOps  Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -63,7 +63,10 @@
             <path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>
           </svg>
         </div>
-        <div class="brand-text"><span>Stud</span>Ops</div>
+        <div>
+          <div class="brand-text"><span>Stud</span>Ops</div>
+          <div style="font-size:.6rem;color:var(--color-text-disabled);letter-spacing:.1em;text-transform:uppercase;margin-top:1px;font-weight:500">Performance Analytics</div>
+        </div>
       </div>
 
       <ul class="sidebar-nav">
@@ -371,5 +374,19 @@
 
   <script src="radial-chart.js"></script>
   <script src="app.js"></script>
+  <script>
+    /* Ripple effect on all .btn elements */
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn');
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple-circle';
+      ripple.style.left = (e.clientX - rect.left - 4) + 'px';
+      ripple.style.top  = (e.clientY - rect.top  - 4) + 'px';
+      btn.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+    });
+  </script>
 </body>
 </html>

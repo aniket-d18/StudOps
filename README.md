@@ -63,7 +63,7 @@
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/bhatvansh67-cpu/StudOps.git
+git clone https://github.com/aniket-d18/StudOps.git
 cd StudOps
 ```
 
@@ -180,4 +180,4 @@ StudOps/
 
 ## License
 
-MIT © [Vansh Bhat](https://github.com/bhatvansh67-cpu)
+MIT © [Vansh Bhat](https://github.com/aniket-d18)
