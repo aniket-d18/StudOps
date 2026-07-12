@@ -20,7 +20,7 @@
   <a href="#getting-started">Getting Started</a> •
   <a href="#project-structure">Structure</a> •
   <a href="#api-reference">API</a> •
-  <a href="#screenshots">Screenshots</a>
+ 
 </p>
 
 ---
